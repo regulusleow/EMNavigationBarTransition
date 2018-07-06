@@ -7,17 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F5E08F6D20EF4083005CCC0B /* EMNavigationBarStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E08F6C20EF4083005CCC0B /* EMNavigationBarStyle.swift */; };
+		F5E08F6F20EF40C8005CCC0B /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E08F6E20EF40C8005CCC0B /* Device.swift */; };
+		F5E08F7120EF40F3005CCC0B /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E08F7020EF40F3005CCC0B /* FirstViewController.swift */; };
+		F5E08F7320EF412F005CCC0B /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E08F7220EF412F005CCC0B /* SecondViewController.swift */; };
+		F5E08F7520EF4152005CCC0B /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E08F7420EF4152005CCC0B /* BaseViewController.swift */; };
 		F5ECF73E20EF3F1900B481CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ECF73D20EF3F1900B481CD /* AppDelegate.swift */; };
-		F5ECF74020EF3F1900B481CD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5ECF73F20EF3F1900B481CD /* ViewController.swift */; };
 		F5ECF74320EF3F1900B481CD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5ECF74120EF3F1900B481CD /* Main.storyboard */; };
 		F5ECF74520EF3F1A00B481CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5ECF74420EF3F1A00B481CD /* Assets.xcassets */; };
 		F5ECF74820EF3F1A00B481CD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5ECF74620EF3F1A00B481CD /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F5E08F6C20EF4083005CCC0B /* EMNavigationBarStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EMNavigationBarStyle.swift; sourceTree = "<group>"; };
+		F5E08F6E20EF40C8005CCC0B /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		F5E08F7020EF40F3005CCC0B /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		F5E08F7220EF412F005CCC0B /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		F5E08F7420EF4152005CCC0B /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		F5ECF73A20EF3F1900B481CD /* EMNavigationBarTransition.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EMNavigationBarTransition.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5ECF73D20EF3F1900B481CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F5ECF73F20EF3F1900B481CD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F5ECF74220EF3F1900B481CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F5ECF74420EF3F1A00B481CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5ECF74720EF3F1A00B481CD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -55,7 +63,11 @@
 			isa = PBXGroup;
 			children = (
 				F5ECF73D20EF3F1900B481CD /* AppDelegate.swift */,
-				F5ECF73F20EF3F1900B481CD /* ViewController.swift */,
+				F5E08F7420EF4152005CCC0B /* BaseViewController.swift */,
+				F5E08F7020EF40F3005CCC0B /* FirstViewController.swift */,
+				F5E08F7220EF412F005CCC0B /* SecondViewController.swift */,
+				F5E08F6C20EF4083005CCC0B /* EMNavigationBarStyle.swift */,
+				F5E08F6E20EF40C8005CCC0B /* Device.swift */,
 				F5ECF74120EF3F1900B481CD /* Main.storyboard */,
 				F5ECF74420EF3F1A00B481CD /* Assets.xcassets */,
 				F5ECF74620EF3F1A00B481CD /* LaunchScreen.storyboard */,
@@ -135,8 +147,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5ECF74020EF3F1900B481CD /* ViewController.swift in Sources */,
 				F5ECF73E20EF3F1900B481CD /* AppDelegate.swift in Sources */,
+				F5E08F6D20EF4083005CCC0B /* EMNavigationBarStyle.swift in Sources */,
+				F5E08F6F20EF40C8005CCC0B /* Device.swift in Sources */,
+				F5E08F7320EF412F005CCC0B /* SecondViewController.swift in Sources */,
+				F5E08F7120EF40F3005CCC0B /* FirstViewController.swift in Sources */,
+				F5E08F7520EF4152005CCC0B /* BaseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
