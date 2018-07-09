@@ -181,7 +181,7 @@ extension DeviceInfo {
             } else if screenHeight == iPhonePlusHeight {
                 return .iPhonePlus
             } else {
-                return .iPhoneXSimulator
+                return .iPhoneX
             }
         }
     }

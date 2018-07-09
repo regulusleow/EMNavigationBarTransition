@@ -8,9 +8,16 @@
 
 import UIKit
 
-class BaseViewController: EMViewController {
+class BaseViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let color = navBarTitleColor
+        navBarTitleColor = color
     }
 }

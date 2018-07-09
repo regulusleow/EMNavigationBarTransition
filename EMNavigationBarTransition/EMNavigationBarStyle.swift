@@ -8,19 +8,8 @@
 
 import UIKit
 
-/// 优化 NavigationController 转场的基类
-public class EMViewController: UIViewController {
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let color = navBarTitleColor
-        navBarTitleColor = color
-    }
-}
-
 // MARK: - UIViewController
-extension EMViewController {
+extension UIViewController {
     
     private struct DefaultValue {
         static var navBarBgAlpha: CGFloat = 1.0
@@ -29,10 +18,6 @@ extension EMViewController {
         static var navBarTitleColor: UIColor = .black
         static var statusBarStyle: UIStatusBarStyle = .default
         static var isHiddenShadowImage: Bool = false
-    }
-    
-    public var emNavigationController: EMNavigationController? {
-        return self.navigationController as? EMNavigationController
     }
     
     /// 设置导航栏背景透明度
@@ -47,7 +32,7 @@ extension EMViewController {
             let alpha = max(min(newValue, 1), 0)
             objc_setAssociatedObject(self, &DefaultValue.navBarBgAlpha, alpha, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             //设置导航栏透明度
-            emNavigationController?.navBarBackgroundAlpha(alpha)
+            navigationController?.navBarBackgroundAlpha(alpha)
         }
     }
     
@@ -61,7 +46,7 @@ extension EMViewController {
         }
         set {
             objc_setAssociatedObject(self, &DefaultValue.navBarBgColor, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            emNavigationController?.navBarBackgroundColor(newValue)
+            navigationController?.navBarBackgroundColor(newValue)
         }
     }
     
@@ -75,7 +60,7 @@ extension EMViewController {
         }
         set {
             objc_setAssociatedObject(self, &DefaultValue.navBarTintColor, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            emNavigationController?.navBarTintColor(newValue)
+            navigationController?.navBarTintColor(newValue)
         }
     }
     
@@ -89,7 +74,7 @@ extension EMViewController {
         }
         set {
             objc_setAssociatedObject(self, &DefaultValue.navBarTitleColor, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            emNavigationController?.navBarTitleColor(newValue)
+            navigationController?.navBarTitleColor(newValue)
         }
     }
     
@@ -117,25 +102,17 @@ extension EMViewController {
         }
         set {
             objc_setAssociatedObject(self, &DefaultValue.isHiddenShadowImage, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            emNavigationController?.shadowImageHide(newValue)
+            navigationController?.shadowImageHide(newValue)
         }
     }
 }
 
-/// 优化转场效果的 navigationcontroller
-public class EMNavigationController: UINavigationController, SelfAware {
-    
-    var emNavigationBar: EMNavigationBar? {
-        return self.navigationBar as? EMNavigationBar
-    }
-}
-
 // MARK: - UINavigationController Swizzle Function
-extension EMNavigationController {
+extension UINavigationController: SelfAware {
     
     /// 设置 status bar style
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return (topViewController as? EMViewController)?.statusBarStyle ?? .default
+        return topViewController?.statusBarStyle ?? .default
     }
     
     static func awake() {
@@ -150,7 +127,6 @@ extension EMNavigationController {
      * 类似于 Objective-c 中的 dispatch once
      */
     private static let swizzle: () = {
-        print("UINavigationController swizzle")
         let needSwizzleSelectorAry = [
             NSSelectorFromString("_updateInteractiveTransition:"),
             #selector(popToViewController(_:animated:)),
@@ -163,8 +139,8 @@ extension EMNavigationController {
         ]
         for sel in needSwizzleSelectorAry {
             let str = ("em_" + sel.description).replacingOccurrences(of: "__", with: "_")
-            if let originMethod = class_getInstanceMethod(EMNavigationController.self, sel),
-                let swizzleMethod = class_getInstanceMethod(EMNavigationController.self, Selector(str)) {
+            if let originMethod = class_getInstanceMethod(UINavigationController.self, sel),
+                let swizzleMethod = class_getInstanceMethod(UINavigationController.self, Selector(str)) {
                 
                 method_exchangeImplementations(originMethod, swizzleMethod)
             }
@@ -173,12 +149,10 @@ extension EMNavigationController {
     
     /// 用于替换系统的 _updateInteractiveTransition: 方法，监听返回手势进度
     @objc func em_updateInteractiveTransition(_ percentComplete: CGFloat) {
-        guard self.isKind(of: EMNavigationController.self) else { return }
-        let topVC = self.topViewController
         /// transitionCoordinator 带有两个 VC 的转场上下文
-        if let coor = topVC?.transitionCoordinator,
-            let fromVC = coor.viewController(forKey: .from) as? EMViewController,
-            let toVC = coor.viewController(forKey: .to) as? EMViewController {
+        if let coor = self.topViewController?.transitionCoordinator,
+            let fromVC = coor.viewController(forKey: .from),
+            let toVC = coor.viewController(forKey: .to) {
             
             let fromAlpha = fromVC.navBarBgAlpha
             let toAlpha = toVC.navBarBgAlpha
@@ -200,16 +174,14 @@ extension EMNavigationController {
     
     /// 替换系统的 pop
     @objc func em_popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
-        if let vc = viewController as? EMViewController {
-            updateAllStyle(vc)
-            navBarTitleColor(vc.navBarTitleColor)
-        }
+        updateAllStyle(viewController)
+        navBarTitleColor(viewController.navBarTitleColor)
         return em_popToViewController(viewController, animated: animated)
     }
     
     /// 替换系统的 pop to root
     @objc func em_popToRootViewControllerAnimated(_ animated: Bool) -> [UIViewController]? {
-        if let vc = viewControllers.first as? EMViewController {
+        if let vc = viewControllers.first {
             updateAllStyle(vc)
             navBarTitleColor(vc.navBarTitleColor)
         }
@@ -218,35 +190,34 @@ extension EMNavigationController {
 }
 
 // MARK: - UINavigationController Customize Function
-extension EMNavigationController {
+extension UINavigationController {
     
     /// 设置透明度
     fileprivate func navBarBackgroundAlpha(_ alpha: CGFloat) {
-        emNavigationBar?.backgroundAlpha(alpha)
+        navigationBar.backgroundAlpha(alpha)
     }
     
     /// 设置背景色
     fileprivate func navBarBackgroundColor(_ color: UIColor) {
-        emNavigationBar?.backgroundColor(color)
+        navigationBar.backgroundColor(color)
     }
     
     /// 设置 Tint color
     fileprivate func navBarTintColor(_ color: UIColor) {
-        emNavigationBar?.tintColor(color)
+        navigationBar.tintColor(color)
     }
     
     /// 设置 title 的颜色
     fileprivate func navBarTitleColor(_ color: UIColor) {
-        emNavigationBar?.titleColor(color)
+        navigationBar.titleColor(color)
     }
     
     /// 隐藏或显示分割线
     fileprivate func shadowImageHide(_ hide: Bool) {
-        emNavigationBar?.shadowImage(hide)
+        navigationBar.shadowImage(hide)
     }
     
-    private func updateAllStyle(_ viewController: EMViewController) {
-        guard self.isKind(of: EMNavigationController.self) else { return }
+    private func updateAllStyle(_ viewController: UIViewController) {
         navBarBackgroundAlpha(viewController.navBarBgAlpha)
         navBarBackgroundColor(viewController.navBarBgColor)
         navBarTintColor(viewController.navBarTintColor)
@@ -277,7 +248,7 @@ extension EMNavigationController {
 }
 
 // MARK: - UINavigationBarDelegate
-extension EMNavigationController: UINavigationBarDelegate {
+extension UINavigationController: UINavigationBarDelegate {
     
     /// pop
     public func navigationBar(_ navigationBar: UINavigationBar,
@@ -311,7 +282,7 @@ extension EMNavigationController: UINavigationBarDelegate {
     public func navigationBar(_ navigationBar: UINavigationBar,
                               shouldPush item: UINavigationItem) -> Bool {
         
-        if let vc = topViewController as? EMViewController {
+        if let vc = topViewController {
             updateAllStyle(vc)
         }
         return true
@@ -321,7 +292,7 @@ extension EMNavigationController: UINavigationBarDelegate {
     private func dealInteractionChanges(_ context: UIViewControllerTransitionCoordinatorContext) {
         /// 设置动画
         let animations: (UITransitionContextViewControllerKey) -> () = { [weak self] in
-            if let vc = context.viewController(forKey: $0) as? EMViewController {
+            if let vc = context.viewController(forKey: $0) {
                 self?.updateAllStyle(vc)
             }
         }
@@ -342,11 +313,8 @@ extension EMNavigationController: UINavigationBarDelegate {
     }
 }
 
-/// 优化转场效果的 navigationbar
-class EMNavigationBar: UINavigationBar {}
-
 // MARK: - UINavigationBar
-extension EMNavigationBar {
+extension UINavigationBar {
     
     fileprivate struct DefaultValue {
         static var backgroundView: UIView = UIView()
@@ -389,7 +357,7 @@ extension EMNavigationBar {
         if backgroundView == nil {
             // 添加一个透明背景的 image 到 _UIBarBackground
             setBackgroundImage(UIImage(), for: .default)
-            let height = DeviceInfo.deviceName == .iPhoneX ? 64 : 88
+            let height = DeviceInfo.deviceName == .iPhoneX ? 88 : 64
             backgroundView = UIView(frame: CGRect(x: 0, y: 0, width: Int(bounds.width), height: height))
             backgroundView?.autoresizingMask = .flexibleWidth
             // _UIBarBackground 是 navigationBar 的第一个子视图
